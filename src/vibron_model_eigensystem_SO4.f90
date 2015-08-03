@@ -25,7 +25,7 @@ PROGRAM build_vibron_HAM
   INTEGER(KIND = I4B) :: SO4_state, omega, v 
   !
   ! NAMELISTS
-  NAMELIST/par_aux/ Iprint, eigenvec, excitation, save_avec
+  NAMELIST/par_aux/ Iprint, eigenvec, excitation, save_avec, save_ham
   NAMELIST/par_0/ N_val, L_min, L_max
   NAMELIST/par_1/ epsilon, alpha, beta, gamma, eta, kappa, beta2
   !
@@ -46,7 +46,7 @@ PROGRAM build_vibron_HAM
   !
   !
   IF (Iprint > 1) THEN
-     WRITE(UNIT = *, FMT = 5) Iprint, eigenvec, excitation, save_avec
+     WRITE(UNIT = *, FMT = 5) Iprint, eigenvec, excitation, save_avec, save_ham
      WRITE(UNIT = *, FMT = 15) N_val, L_min, L_max
      WRITE(UNIT = *, FMT = 25) epsilon, alpha, beta, gamma, eta, kappa, beta2
   ENDIF
@@ -220,6 +220,10 @@ PROGRAM build_vibron_HAM
      !
      ! Build Hamiltonian
      CALL SO4_HAMILTONIAN_VIBRON(N_val, L_val, dim_block)
+     !
+     IF (save_ham) &
+          CALL SAVE_HAM_MATRIX(N_val, L_val, dim_block, "so4", Ham_U4_mat)
+     !
      ! Check time
      CALL CPU_TIME(time_check)
      IF (Iprint == -2) WRITE(UNIT = *, FMT = *) "L_val = ", L_val, &

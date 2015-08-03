@@ -49,13 +49,14 @@ MODULE vibron_u4
   !
   INTEGER(KIND = I4B) :: L_max ! Minimum SO(3) angular momentum 
   !
-  INTEGER(KIND = I4B), PARAMETER :: nHamoper = 12_I4B ! Number of Hamiltonian operators
+  INTEGER(KIND = I4B), PARAMETER :: nHamoper = 13_I4B ! Number of Hamiltonian operators
   !
   REAL(KIND = DP), DIMENSION(1:nHamoper) :: Ham_parameter = 0.0_DP ! Hamiltonian parameters 
   ! 
   LOGICAL :: eigenvec   ! If .T. compute eigenvalues and eigenvectors
   LOGICAL :: excitation ! If .T. compute excitation energy with respect to L = 0 g.s.
   LOGICAL :: save_avec  ! If .T. save eigenvector components.
+  LOGICAL :: save_ham   ! If .T. save hamiltonian matrix
   !
   REAL(KIND = DP) :: GS_energy ! L = 0 Ground state energy 
   !
@@ -794,13 +795,64 @@ CONTAINS
          ";  gamma = ", Ham_parameter(4)
     WRITE(UNIT=76, FMT=*) "# gamma_2 = ", Ham_parameter(5), "; kappa = ", Ham_parameter(6), ";  beta_2 = ", Ham_parameter(7)
     WRITE(UNIT=76, FMT=*) "# gamma_3 = ", Ham_parameter(8), "; kappa_2 = ", Ham_parameter(9), ";  beta_3 = ", Ham_parameter(10)
-    WRITE(UNIT=76, FMT=*) "# delta = ", Ham_parameter(11), "; phi = ", Ham_parameter(12)
+    WRITE(UNIT=76, FMT=*) "# delta = ", Ham_parameter(11), "; phi = ", Ham_parameter(12), "; beta_4 = ", Ham_parameter(13)
     !
     DO basis_index = 1, dim_block
        WRITE(UNIT=76, FMT=*) Ham_mat(basis_index, 1:dim_block)
     ENDDO
     !
   END SUBROUTINE SAVE_EIGENV_COMPONENTS
+  !
+  SUBROUTINE SAVE_HAM_MATRIX(N_val, L_val, dim_block, Basis, Ham_mat)
+    !
+    ! Subroutine to save the Vibron Model Hamiltonian matrix
+    !
+    !  by Currix TM.
+    !
+    IMPLICIT NONE
+    !
+    INTEGER(KIND = I4B), INTENT(IN) :: N_val ! U(4) [N]
+    !
+    INTEGER(KIND = I4B), INTENT(IN) :: L_val ! Angular momentum    
+    !
+    INTEGER(KIND = I4B), INTENT(IN) :: dim_block ! Angular momentum L_val block dimension
+    !
+    CHARACTER(LEN=*), INTENT(IN) :: Basis
+    !
+    REAL(KIND = DP), DIMENSION(:,:), INTENT(IN) :: Ham_mat ! Hamiltonian matrix
+    !
+    INTEGER(KIND = I4B) :: basis_index
+    !
+    CHARACTER(LEN=65) :: output_filename
+    !
+    !
+    ! Build filename
+    IF ( N_val < 10) THEN !to avoid spaces
+       WRITE(output_filename, '("ham_matrix_",A,"_N",I1,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
+    ELSE IF ( dim_block < 100) THEN 
+       WRITE(output_filename, '("ham_matrix_",A,"_N",I2,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
+    ELSE IF ( dim_block < 1000) THEN 
+       WRITE(output_filename, '("ham_matrix_",A,"_N",I3,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
+    ELSE IF ( dim_block < 10000) THEN 
+       WRITE(output_filename, '("ham_matrix_",A,"_N",I4,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
+    ELSE
+       WRITE(output_filename, '("ham_matrix_",A,"_N",I6,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
+    ENDIF
+    !
+    OPEN(UNIT = 76, FILE = output_filename, STATUS = "UNKNOWN", ACTION = "WRITE")
+    !
+    WRITE(UNIT=76, FMT=*) "# N = ", N_val, "; L = ", L_val," ; dim = ", dim_block, " ; ", Basis,  " basis"
+    WRITE(UNIT=76, FMT=*) "# epsilon = ",  Ham_parameter(1), "; alpha = ", Ham_parameter(2), ";  beta = ", Ham_parameter(3), &
+         ";  gamma = ", Ham_parameter(4)
+    WRITE(UNIT=76, FMT=*) "# gamma_2 = ", Ham_parameter(5), "; kappa = ", Ham_parameter(6), ";  beta_2 = ", Ham_parameter(7)
+    WRITE(UNIT=76, FMT=*) "# gamma_3 = ", Ham_parameter(8), "; kappa_2 = ", Ham_parameter(9), ";  beta_3 = ", Ham_parameter(10)
+    WRITE(UNIT=76, FMT=*) "# delta = ", Ham_parameter(11), "; phi = ", Ham_parameter(12), "; beta_4 = ", Ham_parameter(13)
+    !
+    DO basis_index = 1, dim_block
+       WRITE(UNIT=76, FMT=*) Ham_mat(basis_index, 1:dim_block)
+    ENDDO
+    !
+  END SUBROUTINE SAVE_HAM_MATRIX
   !
   !
   SUBROUTINE SO4_HAMILTONIAN_VIBRON_FIT(N_val, L_val, dim_block) 
@@ -1020,6 +1072,15 @@ CONTAINS
        CASE DEFAULT
           !
           STOP 'You should not be here. Invalid nonzero parameter number. Sayonara baby.'
+          !
+       CASE (13) ! (L^2 + D^2)^4/N^4   --> \beta_4  ---> DIAGONAL
+          !
+          DO SO4_state = 1, dim_block
+             omega = SO4_Basis(SO4_state)%omega_SO4_val
+             Ham_U4_mat(SO4_state, SO4_state) = Ham_U4_mat(SO4_state, SO4_state) + &
+                  Ham_parameter(13)*REAL(omega*(omega + 2_I4B), DP)**4/REAL(N_val,DP)**4
+          ENDDO
+          !
           !
        END SELECT
        !
