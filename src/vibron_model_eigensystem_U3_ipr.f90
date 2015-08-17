@@ -1,4 +1,4 @@
-PROGRAM vibron_eigensystem_u3
+PROGRAM vibron_eigensystem_u3_ipr
   !
   ! Eigenvalues and eigenstates of a U(4) Vibron Model Hamiltonian in the U(4) > U(3) > SO(3) basis
   !
@@ -25,7 +25,7 @@ PROGRAM vibron_eigensystem_u3
   !
   !
   ! NAMELISTS
-  NAMELIST/par_aux/ Iprint, eigenvec, excitation, save_avec
+  NAMELIST/par_aux/ Iprint, eigenvec, excitation, save_avec, save_ham
   NAMELIST/par_0/ N_val, L_min, L_max
   NAMELIST/par_1/ epsilon, alpha, beta, gamma, eta, kappa, beta2
   !
@@ -309,4 +309,4 @@ PROGRAM vibron_eigensystem_u3
   !
   !
   !
-END PROGRAM vibron_eigensystem_u3
+END PROGRAM vibron_eigensystem_u3_ipr
