@@ -784,6 +784,8 @@ CONTAINS
        WRITE(output_filename, '("eigvec_",A,"_N",I3,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
     ELSE IF ( N_val < 10000) THEN 
        WRITE(output_filename, '("eigvec_",A,"_N",I4,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
+    ELSE IF ( N_val < 100000) THEN 
+       WRITE(output_filename, '("eigvec_",A,"_N",I5,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
     ELSE
        WRITE(output_filename, '("eigvec_",A,"_N",I6,"_L",I1,".dat")') TRIM(Basis), N_val, L_val
     ENDIF
