@@ -262,7 +262,12 @@ PROGRAM build_vibron_HAM
         !
         v = (N_val - omega)/2_I4B
         !
-        WRITE(UNIT = *, FMT = *) omega, v, eigenval_vec(SO4_state)/N_val, Inv_Part_Ratio(Ham_U4_mat(1:dim_block, SO4_state))/N_val
+        ! Output index v energy/N ipr/N C_n_i, i=0,1,2,3 Cmaxj nmaxj j = 1,2,3
+        WRITE(UNIT = *, FMT = *) SO4_state, v, eigenval_vec(SO4_state)/N_val, &
+             Inv_Part_Ratio(Ham_U4_mat(1:dim_block, SO4_state))/N_val, &
+             Ham_U4_mat(1:4, SO4_state), &
+             Sorted_Components(Ham_U4_mat(1:dim_block, SO4_state),dim_block,4) 
+        !
         !
      ENDDO
      !

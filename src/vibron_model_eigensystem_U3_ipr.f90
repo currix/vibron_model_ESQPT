@@ -45,7 +45,7 @@ PROGRAM vibron_eigensystem_u3_ipr
   READ(UNIT = *, NML = par_1)
   !
   !
-  IF (Iprint > 1) THENºx
+  IF (Iprint > 1) THEN
      WRITE(UNIT = *, FMT = 5) Iprint, eigenvec, excitation, save_avec, save_ham 
      WRITE(UNIT = *, FMT = 15) N_val, L_min, L_max
      WRITE(UNIT = *, FMT = 25) epsilon, alpha, beta, gamma, eta, kappa, beta2
