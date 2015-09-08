@@ -1093,4 +1093,61 @@ CONTAINS
     !
   END SUBROUTINE SO4_HAMILTONIAN_VIBRON_FIT
   !
+  !
+  FUNCTION Sorted_Components(vector, dim, num_comp)
+    !
+    IMPLICIT NONE
+    !
+    ! Return the 0th component and the num_comp-1 components of vector with dimension dim with largest absolute values together with the associated n values
+    !
+    REAL(KIND = DP), DIMENSION(:), INTENT(IN) :: vector
+    INTEGER(KIND = I4B), INTENT(IN) :: dim, num_comp
+    !
+    REAL(KIND = DP), DIMENSION(2*num_comp) :: Sorted_Components
+    !
+    !
+    INTEGER(KIND = I4B) index_1, index_2, index_3
+    !
+    Sorted_Components(1) = vector(1)
+    Sorted_Components(2) = U3_Basis(1)%np_U3_val
+    Sorted_Components(3) = vector(1)
+    Sorted_Components(4) = U3_Basis(1)%np_U3_val
+    !
+    DO index_1 = 2, dim
+       !
+       !print*, index_1
+       !
+       DO index_2 = 3, 2*num_comp, 2
+          !
+          !print*, index_2
+          !
+          IF (ABS(vector(index_1)) > ABS(Sorted_Components(index_2))) THEN
+             !
+             !print*, index_2, vector(index_1), Sorted_Components(index_2)
+             !
+             !print*, sorted_components(1:2*num_comp)
+             !
+             DO index_3 = 2*num_comp, index_2 + 2, -2
+                Sorted_Components(index_3-1) = Sorted_Components(index_3-3) ! Component
+                Sorted_Components(index_3) = Sorted_Components(index_3-2)! n value
+             ENDDO
+             !
+             Sorted_Components(index_2) = vector(index_1)
+             Sorted_Components(index_2+1) = U3_Basis(index_1)%np_U3_val
+             !
+             !print*, "--"
+             !print*, sorted_components(1:2*num_comp)
+             !
+             EXIT
+             !
+          ENDIF
+          !
+       ENDDO
+       !
+    ENDDO
+    !
+    RETURN
+    !
+  END FUNCTION Sorted_Components
+  !
 END MODULE vibron_u4

@@ -45,8 +45,8 @@ PROGRAM vibron_eigensystem_u3_ipr
   READ(UNIT = *, NML = par_1)
   !
   !
-  IF (Iprint > 1) THEN
-     WRITE(UNIT = *, FMT = 5) Iprint, eigenvec, excitation, save_avec 
+  IF (Iprint > 1) THENºx
+     WRITE(UNIT = *, FMT = 5) Iprint, eigenvec, excitation, save_avec, save_ham 
      WRITE(UNIT = *, FMT = 15) N_val, L_min, L_max
      WRITE(UNIT = *, FMT = 25) epsilon, alpha, beta, gamma, eta, kappa, beta2
   ENDIF
@@ -261,14 +261,18 @@ PROGRAM vibron_eigensystem_u3_ipr
      !
      IF (Iprint > 0) THEN
         WRITE(UNIT = *, FMT = *) "L_val = ", L_val
-        WRITE(*,*) "n E_n IPR_n"
+        WRITE(*,*) "index n E_n IPR_n C_n C_max ind_max"
      ENDIF
      !
      DO U3_state = 1, dim_block
         !
         np = U3_Basis(U3_state)%np_U3_val
         !
-        WRITE(UNIT = *, FMT = *) np, eigenval_vec(U3_state), Inv_Part_Ratio(Ham_U4_mat(1:dim_block, U3_state))
+        ! Output index n energy/N ipr/N C_n_i, i=0,1,2,3 Cmaxj nmaxj j = 1,2,3
+        WRITE(UNIT = *, FMT = *)  U3_state, np, eigenval_vec(U3_state)/N_val, &
+             Inv_Part_Ratio(Ham_U4_mat(1:dim_block, U3_state))/N_val, &
+             Ham_U4_mat(1:4, U3_state), &
+             Sorted_Components(Ham_U4_mat(1:dim_block, U3_state),dim_block,4) 
         !
      ENDDO
      !
