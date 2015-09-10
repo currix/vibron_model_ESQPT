@@ -19,7 +19,7 @@ getopts("XEIivhe:",\%options);
 use File::Temp qw/ tempfile /;
 #
 # bin files path
-my $binpath = "~/PR_Fortran/Endohedral/bin";
+my $binpath = "~/PR_Fortran/U4/bin";
 #
 (my $prgname) = $0 =~ m#.*/(.+$)#;
 #
