@@ -37,16 +37,16 @@ all: vibron_u4_so4_energies vibron_u4_u3_energies vibron_u4_so4_ipr vibron_u4_u3
 #
 #######################
 vibron_u4_so4_energies: $(U4_vibron_HAM_SO4_SRC) Makefile 
-	$(FC) -o $(BINPATH)/$@_  $(MODLIB) $(U4_vibron_HAM_SO4_SRC) $(LIBS) 
+	$(FC) -o $(BINPATH)/$@  $(MODLIB) $(U4_vibron_HAM_SO4_SRC) $(LIBS) 
 #######################
 vibron_u4_u3_energies: $(U4_vibron_HAM_U3_SRC)  Makefile 
-	$(FC) -o $(BINPATH)/$@_  $(MODLIB) $(U4_vibron_HAM_U3_SRC) $(LIBS) 
+	$(FC) -o $(BINPATH)/$@  $(MODLIB) $(U4_vibron_HAM_U3_SRC) $(LIBS) 
 #######################
 vibron_u4_so4_ipr: $(U4_vibron_HAM_SO4_IPR_SRC) Makefile 
-	$(FC) -o $(BINPATH)/$@_ $(MODLIB) $(U4_vibron_HAM_SO4_IPR_SRC) $(LIBS) 
+	$(FC) -o $(BINPATH)/$@ $(MODLIB) $(U4_vibron_HAM_SO4_IPR_SRC) $(LIBS) 
 #######################
 vibron_u4_u3_ipr: $(U4_vibron_HAM_U3_IPR_SRC) Makefile 
-	$(FC) -o $(BINPATH)/$@_ $(MODLIB) $(U4_vibron_HAM_U3_IPR_SRC) $(LIBS) 
+	$(FC) -o $(BINPATH)/$@ $(MODLIB) $(U4_vibron_HAM_U3_IPR_SRC) $(LIBS) 
 #######################
 clean:
 	@rm -f  *.o *.mod vibron_u4_u3_ipr vibron_u4_so4_ipr vibron_u4_u3_energies vibron_u4_so4_energies
