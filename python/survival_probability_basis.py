@@ -24,17 +24,22 @@ def read_eigenstates(filename):
     return fortran_output
 #########################################################################
 #########################################################################
-def survival_probability_basis_states(Eigenvalues, Eigenstates, min_index_basis, max_index_basis, t_max = 3, dim_t = 100):
+def survival_probability_basis_states(Eigenvalues, Eigenstates, min_index_basis, max_index_basis, t_max = 3, dim_t = 100, time_grid = None):
     #
-    '''Compute the survival probability for a given basis. See notes... (TODO complete docstring)'''
+    '''Compute the survival probability for a given basis.
+       Note that min_index_basis and max_index_basis are indeces and not n values.
+
+       Thus in the U(3) case n = 0 --> min_index_basis = max_index_basis = 1 '''
     #
     import numpy as np
     #
-    time_grid = np.linspace( 0.0, t_max, dim_t)
+    if time_grid is None:
+        # Linear time_grid
+        time_grid = np.linspace( 0.0, t_max, dim_t)
     #
     num_curves = max_index_basis - min_index_basis + 1
     #
-    result = np.zeros([num_curves,dim_t])
+    result = np.zeros([num_curves,time_grid.shape[0]])
     #
     for curve in range(1,num_curves+1):
         #
@@ -77,22 +82,5 @@ def plot_surv_prob(surv_prob_output, t_max = 3, dim_t = 100, nxplot = 1, nyplot 
     for index in range(curve_number):
         pyplot.subplot(nxplot, nyplot, index)
         pyplot.plot(time_grid, surv_prob_output[index,:])
-#########################################################################
-#########################################################################
-def energy_basis_I(N_value, n_value, l_value, xi_value):
-    #
-    '''Computes the diagonal matrix element <[N]n^l|H(xi)|[N]n^l> '''
-    #
-    return  (1-xi_value)*n_value + xi_value*(N_value*(N_value + 1) - (N_value - n_value)*(n_value + 2.0) - (N_value - n_value + 1.0)*n_value - l_value*l_value)/(N_value - 1.0)
-#########################################################################
-#########################################################################
-def energy_basis_II(N_value, omega_value, l_value, xi_value):
-    #
-    '''Computes the diagonal matrix element <[N]n^l|H(xi)|[N]n^l> '''
-    #
-    ndiagmatel = (N_value - omega_value) * ((omega_value-l_value+2.0)*(omega_value-l_value+1.0) + (omega_value+l_value+2.0)*(omega_value+l_value+1.0)) / (2.0*(2.0*omega_value+1.0)*(2.0*omega_value+3.0)) + (N_value + omega_value + 1.0) * ((omega_value+l_value)*(omega_value+l_value-1.0) + (omega_value-l_value)*(omega_value-l_value-1.0)) / (2.0*(2.0*omega_value-1.0)*(2.0*omega_value+1.0))
-    pairdiagmatel = (N_value + 1.0)*N_value - (omega_value + 1.0)*omega_value
-    #
-    return (1-xi_value)*ndiagmatel + xi_value*pairdiagmatel/(N_value - 1.0)
 #########################################################################
 #########################################################################
